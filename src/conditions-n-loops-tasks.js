@@ -438,8 +438,18 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const array = arr;
+  for (let current = 1; current < array.length; current += 1) {
+    const element = array[current];
+    let prevPos = current - 1;
+    while (prevPos >= 0 && array[prevPos] > element) {
+      array[prevPos + 1] = array[prevPos];
+      prevPos -= 1;
+    }
+    array[prevPos + 1] = element;
+  }
+  return array;
 }
 
 /**
@@ -480,8 +490,72 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+/**
+ * Returns the nearest largest integer consisting of the digits of the given positive integer.
+ * If there is no such number, it returns the original number.
+ * Usage of String class methods is not allowed in this task.
+ *
+ * @example:
+ * 12345    => 12354
+ * 123450   => 123504
+ * 12344    => 12434
+ * 123440   => 124034
+ * 1203450  => 1203504
+ * 90822    => 92028
+ * 321321   => 322113
+ *
+ * @param {number} number The source number
+ * @returns {number} The nearest larger number, or original number if none exists.
+ */
+function getNearestBigger(number) {
+  const digits = [];
+  let num = number;
+
+  while (num > 0) {
+    const digit = num % 10;
+    let pos = digits.length;
+    while (pos > 0) {
+      digits[pos] = digits[pos - 1];
+      pos -= 1;
+    }
+    digits[0] = digit;
+    num = Math.floor(num / 10);
+  }
+
+  let i = digits.length - 2;
+  while (i >= 0 && digits[i] >= digits[i + 1]) {
+    i -= 1;
+  }
+
+  if (i < 0) {
+    return number;
+  }
+
+  let j = digits.length - 1;
+  while (j > i && digits[j] <= digits[i]) {
+    j -= 1;
+  }
+
+  const temp1 = digits[i];
+  digits[i] = digits[j];
+  digits[j] = temp1;
+
+  let left = i + 1;
+  let right = digits.length - 1;
+  while (left < right) {
+    const temp2 = digits[left];
+    digits[left] = digits[right];
+    digits[right] = temp2;
+    left += 1;
+    right -= 1;
+  }
+
+  let result = 0;
+  for (let k = 0; k < digits.length; k += 1) {
+    result = result * 10 + digits[k];
+  }
+
+  return result;
 }
 
 module.exports = {
